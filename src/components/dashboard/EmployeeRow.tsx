@@ -10,15 +10,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreVertical, ChevronDown, ChevronUp } from 'lucide-react';
-import { Employee } from '@/lib/types';
+import type { Employee } from '@/lib/types';
 import { EmployeeForm } from './EmployeeForm';
-
 
 type EmployeeRowProps = {
   employee: Employee;
   onToggleExpand: (id: string) => void;
   onToggleCheck: (id: string) => void;
   onSaveEmployee: (employee: Employee) => void;
+  isExpanded: boolean;
+  isChecked: boolean;
 };
 
 export function EmployeeRow({
@@ -26,14 +27,16 @@ export function EmployeeRow({
   onToggleExpand,
   onToggleCheck,
   onSaveEmployee,
+  isExpanded,
+  isChecked,
 }: EmployeeRowProps) {
   return (
     <>
-      <TableRow className={employee.expanded ? 'bg-teal-50/50' : ''}>
+      <TableRow className={isExpanded ? 'bg-teal-50/50' : ''}>
         <TableCell className='w-[50px]'>
           <Checkbox
             id={`employee-${employee.id}`}
-            checked={employee.checked}
+            checked={isChecked}
             onCheckedChange={() => onToggleCheck(employee.id)}
           />
         </TableCell>
@@ -64,7 +67,7 @@ export function EmployeeRow({
                   <span className='sr-only'>Actions</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
+              <DropdownMenuContent align='end' className='bg-white'>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
                 <DropdownMenuItem>Delete</DropdownMenuItem>
               </DropdownMenuContent>
@@ -74,7 +77,7 @@ export function EmployeeRow({
               size='icon'
               onClick={() => onToggleExpand(employee.id)}
             >
-              {employee.expanded ? (
+              {isExpanded ? (
                 <ChevronUp className='h-4 w-4' />
               ) : (
                 <ChevronDown className='h-4 w-4' />
@@ -84,7 +87,7 @@ export function EmployeeRow({
           </div>
         </TableCell>
       </TableRow>
-      {employee.expanded && (
+      {isExpanded && (
         <TableRow className='bg-teal-50/50'>
           <TableCell colSpan={9} className='py-0 pl-12 pr-4'>
             <EmployeeForm employee={employee} onSave={onSaveEmployee} />
