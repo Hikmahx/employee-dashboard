@@ -90,7 +90,11 @@ export function Header({
             }`}
             onClick={() => setLayoutView('list')}
           >
-            <List className='h-4 w-4 text-gray-500' />
+            <List
+              className={`h-4 w-4 ${
+                layoutView === 'grid' ? 'text-gray-500' : 'text-white'
+              }`}
+            />
             <span className='sr-only'>List view</span>
           </Button>
           <Button
@@ -103,7 +107,11 @@ export function Header({
             }`}
             onClick={() => setLayoutView('grid')}
           >
-            <Grid3X3 className='h-4 w-4 text-gray-500' />
+            <Grid3X3
+              className={`h-4 w-4 ${
+                layoutView === 'list' ? 'text-gray-500' : 'text-white'
+              }`}
+            />
             <span className='sr-only'>Grid view</span>
           </Button>
         </div>
