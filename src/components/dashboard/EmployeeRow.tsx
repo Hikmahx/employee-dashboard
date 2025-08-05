@@ -30,6 +30,8 @@ type EmployeeRowProps = {
   onToggleCheck: (id: string) => void
   onSaveEmployee: (employee: Employee) => void
   onDeleteEmployee: (id: string) => void
+  onEditEmployee: (employee: Employee) => void
+  availablePositions: string[]
 }
 
 export function EmployeeRow({
@@ -38,6 +40,8 @@ export function EmployeeRow({
   onToggleCheck,
   onSaveEmployee,
   onDeleteEmployee,
+  onEditEmployee,
+  availablePositions,
 }: EmployeeRowProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
@@ -79,6 +83,9 @@ export function EmployeeRow({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='bg-white cursor-pointer'>
+                <DropdownMenuItem onClick={() => onEditEmployee(employee)}>
+                  Edit
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
                   Delete
                 </DropdownMenuItem>
@@ -102,7 +109,11 @@ export function EmployeeRow({
       {employee.expanded && (
         <TableRow className='bg-teal-50/20'>
           <TableCell colSpan={9} className='py-0 pl-12 pr-4'>
-            <EmployeeForm employee={employee} onSave={onSaveEmployee} />
+            <EmployeeForm
+              employee={employee}
+              onSave={onSaveEmployee}
+              availablePositions={availablePositions}
+            />
           </TableCell>
         </TableRow>
       )}

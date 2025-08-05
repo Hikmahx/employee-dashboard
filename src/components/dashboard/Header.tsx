@@ -1,26 +1,27 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react'
+import { useDebounceValue } from 'usehooks-ts'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Plus, List, AlignJustify, Search } from 'lucide-react';
+} from '@/components/ui/select'
+import { Plus, List, Search, AlignJustify } from 'lucide-react'
 
 interface HeaderProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  categoryFilter: string;
-  setCategoryFilter: (category: string) => void;
-  showSelectedOnly: boolean;
-  setShowSelectedOnly: (show: boolean) => void;
-  onAddEmployeeClick: () => void;
+  searchTerm: string
+  setSearchTerm: (term: string) => void
+  categoryFilter: string
+  setCategoryFilter: (category: string) => void
+  showSelectedOnly: boolean
+  setShowSelectedOnly: (show: boolean) => void
+  onAddEmployeeClick: () => void
+  availablePositions: string[]
 }
 
 export function Header({
@@ -31,16 +32,17 @@ export function Header({
   showSelectedOnly,
   setShowSelectedOnly,
   onAddEmployeeClick,
+  availablePositions,
 }: HeaderProps) {
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm)
 
-  const [debouncedLocalSearchTerm] = useDebounceValue(localSearchTerm, 300);
+  const [debouncedLocalSearchTerm] = useDebounceValue(localSearchTerm, 300)
 
   useEffect(() => {
     if (debouncedLocalSearchTerm !== searchTerm) {
-      setSearchTerm(debouncedLocalSearchTerm);
+      setSearchTerm(debouncedLocalSearchTerm)
     }
-  }, [debouncedLocalSearchTerm, searchTerm, setSearchTerm]);
+  }, [debouncedLocalSearchTerm, searchTerm, setSearchTerm])
 
   return (
     <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-0 mb-5 lg:mb-0'>
@@ -53,9 +55,11 @@ export function Header({
             </SelectTrigger>
             <SelectContent className='bg-white'>
               <SelectItem value='all'>All categories</SelectItem>
-              <SelectItem value='designer'>Designer</SelectItem>
-              <SelectItem value='product manager'>Product Manager</SelectItem>
-              <SelectItem value='engineer'>Engineer</SelectItem>
+              {availablePositions.map((position) => (
+                <SelectItem key={position} value={position.toLowerCase()}>
+                  {position}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <div className='relative w-full md:w-auto'>
@@ -77,7 +81,7 @@ export function Header({
             <Plus className='mr-2 h-4 w-4' />
             Add <span className='hidden md:flex'>employee</span>
           </Button>
-          <div className='flex  rounded-md border'>
+          <div className='flex rounded-md border'>
             <Button
               variant={!showSelectedOnly ? 'default' : 'ghost'}
               size='icon'
@@ -116,5 +120,5 @@ export function Header({
         </div>
       </div>
     </div>
-  );
+  )
 }

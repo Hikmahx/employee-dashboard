@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns'; // Import format from date-fns
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,32 +20,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { CalendarIcon } from 'lucide-react'; // Changed to CalendarIcon
+} from '@/components/ui/form'
+import { CalendarIcon } from 'lucide-react'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'; // Import Popover components
-import { Calendar } from '@/components/ui/calendar'; // Import Calendar component
-import { cn } from '@/lib/utils'; // Import cn for conditional class names
-import type { Employee } from '@/lib/types';
-import { EmployeeSchema } from '@/lib/types'; // Import the Zod schema
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import type { Employee } from '@/lib/types'
+import { EmployeeSchema } from '@/lib/types'
 
 type EmployeeEditFormProps = {
-  employee: Employee;
-  onSave: (employee: Employee) => void;
-};
+  employee: Employee
+  onSave: (employee: Employee) => void
+  availablePositions: string[]
+}
 
-export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
+export function EmployeeForm({
+  employee,
+  onSave,
+  availablePositions,
+}: EmployeeEditFormProps) {
   const form = useForm<Employee>({
-    resolver: zodResolver(EmployeeSchema), // Use zodResolver
-    defaultValues: employee, // Initialize form with the current employee data
-  });
+    resolver: zodResolver(EmployeeSchema),
+    defaultValues: employee,
+  })
 
   const onSubmit = (values: Employee) => {
-    onSave(values);
-  };
+    onSave(values)
+  }
 
   return (
     <Form {...form}>
@@ -60,9 +65,15 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
             <FormItem>
               <FormLabel className='text-xs text-gray-500'>Surname</FormLabel>
               <FormControl>
-                <Input className='h-8' {...field} />
+                <Input
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.surname && 'border-red-500'
+                  )}
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -74,19 +85,24 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
               <FormLabel className='text-xs text-gray-500'>Position</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className='h-8'>
+                  <SelectTrigger
+                    className={cn(
+                      'h-8',
+                      form.formState.errors.position && 'border-red-500'
+                    )}
+                  >
                     <SelectValue placeholder='Select position' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className='bg-white'>
-                  <SelectItem value='Designer'>Designer</SelectItem>
-                  <SelectItem value='Product manager'>
-                    Product manager
-                  </SelectItem>
-                  <SelectItem value='Engineer'>Engineer</SelectItem>
+                  {availablePositions.map((position) => (
+                    <SelectItem key={position} value={position}>
+                      {position}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -98,13 +114,16 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
               <FormLabel className='text-xs text-gray-500'>Team</FormLabel>
               <FormControl>
                 <Input
-                  className='h-8'
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.team && 'border-red-500'
+                  )}
                   type='number'
                   {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)} // Correctly handle number input
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -115,9 +134,15 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
             <FormItem>
               <FormLabel className='text-xs text-gray-500'>Name</FormLabel>
               <FormControl>
-                <Input className='h-8' {...field} />
+                <Input
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.name && 'border-red-500'
+                  )}
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -131,7 +156,12 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
               </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className='h-8'>
+                  <SelectTrigger
+                    className={cn(
+                      'h-8',
+                      form.formState.errors.experience && 'border-red-500'
+                    )}
+                  >
                     <SelectValue placeholder='Select experience' />
                   </SelectTrigger>
                 </FormControl>
@@ -141,7 +171,7 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
                   <SelectItem value='5 years'>5 years</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -158,7 +188,8 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
                       variant={'outline'}
                       className={cn(
                         'h-8 pl-3 text-left font-normal',
-                        !field.value && 'text-muted-foreground'
+                        !field.value && 'text-muted-foreground',
+                        form.formState.errors.bday && 'border-red-500'
                       )}
                     >
                       {field.value ? (
@@ -182,7 +213,7 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
                   />
                 </PopoverContent>
               </Popover>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -193,9 +224,15 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
             <FormItem>
               <FormLabel className='text-xs text-gray-500'>E-mail</FormLabel>
               <FormControl>
-                <Input className='h-8' {...field} />
+                <Input
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.email && 'border-red-500'
+                  )}
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -206,9 +243,15 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
             <FormItem>
               <FormLabel className='text-xs text-gray-500'>Mobile</FormLabel>
               <FormControl>
-                <Input className='h-8' {...field} />
+                <Input
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.mobile && 'border-red-500'
+                  )}
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -218,22 +261,16 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className='text-xs text-gray-500'>Address</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className='h-8'>
-                    <SelectValue placeholder='Select address' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className='bg-white'>
-                  <SelectItem value='Minsk, Pobeditelay, 135'>
-                    Minsk, Pobeditelay, 135
-                  </SelectItem>
-                  <SelectItem value='Minsk, Derzinskogo, 47'>
-                    Minsk, Derzinskogo, 47
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
+              <FormControl>
+                <Input
+                  className={cn(
+                    'h-8',
+                    form.formState.errors.address && 'border-red-500'
+                  )}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -245,7 +282,12 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
               <FormLabel className='text-xs text-gray-500'>Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className='h-8'>
+                  <SelectTrigger
+                    className={cn(
+                      'h-8',
+                      form.formState.errors.status && 'border-red-500'
+                    )}
+                  >
                     <SelectValue placeholder='Select status' />
                   </SelectTrigger>
                 </FormControl>
@@ -254,7 +296,7 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
                   <SelectItem value='Part-time'>Part-time</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -269,5 +311,5 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
         </div>
       </form>
     </Form>
-  );
+  )
 }

@@ -34,6 +34,10 @@ export default function Home() {
   const [showSelectedOnly, setShowSelectedOnly] = useState(false)
 
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false)
+  const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] =
+    useState(false)
+  const [selectedEmployeeForEdit, setSelectedEmployeeForEdit] =
+    useState<Employee | null>(null)
 
   const [columnFilters, setColumnFilters] = useState<ColumnFilters>({
     nameId: '',
@@ -41,13 +45,22 @@ export default function Home() {
     team: '',
     bday: '',
     emailMobile: '',
-    address: 'All',
+    address: '', 
     status: 'All',
   })
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: null,
     direction: 'asc',
   })
+
+
+  // Derive unique positions and addresses from the current employees data
+  const availablePositions = useMemo(() => {
+    const positions = new Set<string>()
+    employees.forEach((emp) => positions.add(emp.position))
+    return Array.from(positions).sort()
+  }, [employees])
+
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080')
@@ -107,6 +120,11 @@ export default function Home() {
     )
   }
 
+  const handleEditEmployee = (employee: Employee) => {
+    setSelectedEmployeeForEdit(employee)
+    setIsEditEmployeeDialogOpen(true)
+  }
+
   const handleSaveEmployee = (updatedEmployee: Employee) => {
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) =>
@@ -122,7 +140,7 @@ export default function Home() {
     setEmployees((prevEmployees) =>
       prevEmployees.filter((emp) => emp.id !== id)
     )
-    toast(`Employee with ID ${id.split('-')[1]} has been removed.`)
+    toast(`Employee with ID ${id} has been removed.`)
   }
 
   const handleAddEmployee = (
@@ -232,8 +250,10 @@ export default function Home() {
             .includes(columnFilters.emailMobile.toLowerCase())
       )
     }
-    if (columnFilters.address !== 'All') {
-      filtered = filtered.filter((emp) => emp.address === columnFilters.address)
+    if (columnFilters.address) {
+      filtered = filtered.filter((emp) =>
+        emp.address.toLowerCase().includes(columnFilters.address.toLowerCase())
+      )
     }
     if (columnFilters.status !== 'All') {
       filtered = filtered.filter((emp) => emp.status === columnFilters.status)
@@ -292,6 +312,7 @@ export default function Home() {
         showSelectedOnly={showSelectedOnly}
         setShowSelectedOnly={setShowSelectedOnly}
         onAddEmployeeClick={() => setIsAddEmployeeDialogOpen(true)}
+        availablePositions={availablePositions}
       />
       {filteredAndSortedEmployees.length === 0 ? (
         <p className='text-center text-gray-500 py-8'>No employees found.</p>
@@ -303,10 +324,12 @@ export default function Home() {
             onToggleCheck={handleToggleCheck}
             onSaveEmployee={handleSaveEmployee}
             onDeleteEmployee={handleDeleteEmployee}
+            onEditEmployee={handleEditEmployee}
             columnFilters={columnFilters}
             sortConfig={sortConfig}
             onSort={handleSort}
             onColumnFilterChange={handleColumnFilterChange}
+            availablePositions={availablePositions}
           />
           <Paginator
             currentPage={currentPage}
@@ -320,6 +343,7 @@ export default function Home() {
         isOpen={isAddEmployeeDialogOpen}
         onClose={() => setIsAddEmployeeDialogOpen(false)}
         onAddEmployee={handleAddEmployee}
+        availablePositions={availablePositions}
       />
     </>
   )

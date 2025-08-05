@@ -35,10 +35,12 @@ type EmployeeTableProps = {
   onToggleCheck: (id: string) => void
   onSaveEmployee: (employee: Employee) => void
   onDeleteEmployee: (id: string) => void
+  onEditEmployee: (employee: Employee) => void
   columnFilters: ColumnFilters
   onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void
   sortConfig: SortConfig
   onSort: (key: keyof Employee) => void
+  availablePositions: string[]
 }
 
 export function EmployeeTable({
@@ -47,10 +49,12 @@ export function EmployeeTable({
   onToggleCheck,
   onSaveEmployee,
   onDeleteEmployee,
+  onEditEmployee,
   columnFilters,
   onColumnFilterChange,
   sortConfig,
   onSort,
+  availablePositions,
 }: EmployeeTableProps) {
   const getSortIcon = (key: keyof Employee) => {
     if (sortConfig.key !== key) {
@@ -138,6 +142,7 @@ export function EmployeeTable({
           <Filters
             columnFilters={columnFilters}
             onColumnFilterChange={onColumnFilterChange}
+            availablePositions={availablePositions}
           />
         </TableHeader>
         <TableBody>
@@ -156,6 +161,8 @@ export function EmployeeTable({
                 onToggleCheck={onToggleCheck}
                 onSaveEmployee={onSaveEmployee}
                 onDeleteEmployee={onDeleteEmployee}
+                onEditEmployee={onEditEmployee}
+                availablePositions={availablePositions}
               />
             ))
           )}

@@ -35,11 +35,13 @@ type ColumnFilters = {
 type TableFiltersProps = {
   columnFilters: ColumnFilters
   onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void
+  availablePositions: string[]
 }
 
 export function Filters({
   columnFilters,
   onColumnFilterChange,
+  availablePositions,
 }: TableFiltersProps) {
   // Local states for debounced inputs
   const [localNameId, setLocalNameId] = useState(columnFilters.nameId)
@@ -48,12 +50,14 @@ export function Filters({
   const [localEmailMobile, setLocalEmailMobile] = useState(
     columnFilters.emailMobile
   )
+  const [localAddress, setLocalAddress] = useState(columnFilters.address)
 
   // Debounced values
   const [debouncedNameId] = useDebounceValue(localNameId, 300)
   const [debouncedTeam] = useDebounceValue(localTeam, 300)
   const [debouncedBday] = useDebounceValue(localBday, 300)
   const [debouncedEmailMobile] = useDebounceValue(localEmailMobile, 300)
+  const [debouncedAddress] = useDebounceValue(localAddress, 300)
 
   // Effects to update parent's filter state after debounce
   useEffect(() => {
@@ -79,6 +83,12 @@ export function Filters({
       onColumnFilterChange('emailMobile', debouncedEmailMobile)
     }
   }, [debouncedEmailMobile, columnFilters.emailMobile, onColumnFilterChange])
+
+  useEffect(() => {
+    if (debouncedAddress !== columnFilters.address) {
+      onColumnFilterChange('address', debouncedAddress)
+    }
+  }, [debouncedAddress, columnFilters.address, onColumnFilterChange])
 
   // Helper to parse date string for Calendar component
   const parseDateString = (dateString: string): Date | undefined => {
@@ -111,10 +121,11 @@ export function Filters({
           </SelectTrigger>
           <SelectContent className='bg-white'>
             <SelectItem value='All'>All</SelectItem>
-            <SelectItem value='Designer'>Designer</SelectItem>
-            <SelectItem value='Product manager'>Product manager</SelectItem>
-            <SelectItem value='Engineer'>Engineer</SelectItem>
-            <SelectItem value='New Hire'>New Hire</SelectItem>
+            {availablePositions.map((position) => (
+              <SelectItem key={position} value={position}>
+                {position}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </TableCell>
@@ -184,26 +195,16 @@ export function Filters({
         </div>
       </TableCell>
       <TableCell>
-        <Select
-          value={columnFilters.address}
-          onValueChange={(val) => onColumnFilterChange('address', val)}
-        >
-          <SelectTrigger className='h-8'>
-            <SelectValue placeholder='All' />
-          </SelectTrigger>
-          <SelectContent className='bg-white'>
-            <SelectItem value='All'>All</SelectItem>
-            <SelectItem value='Minsk, Pobeditelay, 135'>
-              Minsk, Pobeditelay, 135
-            </SelectItem>
-            <SelectItem value='Minsk, Derzinskogo, 47'>
-              Minsk, Derzinskogo, 47
-            </SelectItem>
-            <SelectItem value='New City, New Street, 1'>
-              New City, New Street, 1
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <div className='relative'>
+          <Input
+            type='text'
+            placeholder='Search address...'
+            className='h-8 pl-8'
+            value={localAddress}
+            onChange={(e) => setLocalAddress(e.target.value)}
+          />
+          <Search className='absolute left-2.5 top-2.5 h-3 w-3 text-gray-500' />
+        </div>
       </TableCell>
       <TableCell>
         <Select

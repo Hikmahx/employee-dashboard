@@ -56,12 +56,14 @@ type AddEmployeeDialogProps = {
   onAddEmployee: (
     employee: Omit<Employee, 'id' | 'checked' | 'expanded'>
   ) => void
+  availablePositions: string[]
 }
 
 export function AddEmployeeDialog({
   isOpen,
   onClose,
   onAddEmployee,
+  availablePositions,
 }: AddEmployeeDialogProps) {
   const form = useForm<AddEmployeeFormValues>({
     resolver: zodResolver(AddEmployeeFormSchema),
@@ -161,12 +163,11 @@ export function AddEmployeeDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className='bg-white'>
-                      <SelectItem value='Designer'>Designer</SelectItem>
-                      <SelectItem value='Product manager'>
-                        Product manager
-                      </SelectItem>
-                      <SelectItem value='Engineer'>Engineer</SelectItem>
-                      <SelectItem value='New Hire'>New Hire</SelectItem>
+                      {availablePositions.map((position) => (
+                        <SelectItem key={position} value={position}>
+                          {position}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage className='text-red-500' />
@@ -323,32 +324,15 @@ export function AddEmployeeDialog({
                   <FormLabel className='text-xs text-gray-500'>
                     Address
                   </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger
-                        className={cn(
-                          'h-9',
-                          form.formState.errors.address && 'border-red-500'
-                        )}
-                      >
-                        <SelectValue placeholder='Select address' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className='bg-white'>
-                      <SelectItem value='Minsk, Pobeditelay, 135'>
-                        Minsk, Pobeditelay, 135
-                      </SelectItem>
-                      <SelectItem value='Minsk, Derzinskogo, 47'>
-                        Minsk, Derzinskogo, 47
-                      </SelectItem>
-                      <SelectItem value='New City, New Street, 1'>
-                        New City, New Street, 1
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.address && 'border-red-500'
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage className='text-red-500' />
                 </FormItem>
               )}
