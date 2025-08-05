@@ -50,7 +50,7 @@ export function Header({
           <SelectTrigger className='w-[180px]'>
             <SelectValue placeholder='All categories' />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className='bg-white'>
             <SelectItem value='all'>All categories</SelectItem>
             <SelectItem value='designer'>Designer</SelectItem>
             <SelectItem value='product manager'>Product Manager</SelectItem>
