@@ -178,6 +178,7 @@ export function EmployeeForm({ employee, onSave }: EmployeeEditFormProps) {
                       field.onChange(date ? format(date, 'MMM dd, yyyy') : '')
                     }
                     initialFocus
+                    captionLayout='dropdown'
                   />
                 </PopoverContent>
               </Popover>

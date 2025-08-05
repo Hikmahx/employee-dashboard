@@ -1,89 +1,90 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
-import { TableRow, TableCell } from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react'
+import { useDebounceValue } from 'usehooks-ts'
+import { TableRow, TableCell } from '@/components/ui/table'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Search, CalendarIcon } from 'lucide-react';
+} from '@/components/ui/select'
+import { Search, CalendarIcon, X } from 'lucide-react'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import { format, parse, isValid } from 'date-fns';
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import { format, parse, isValid } from 'date-fns'
+import { Button } from '@/components/ui/button'
 
 type ColumnFilters = {
-  nameId: string;
-  position: string;
-  team: string;
-  bday: string;
-  emailMobile: string;
-  address: string;
-  status: string;
-};
+  nameId: string
+  position: string
+  team: string
+  bday: string
+  emailMobile: string
+  address: string
+  status: string
+}
 
 type TableFiltersProps = {
-  columnFilters: ColumnFilters;
-  onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void;
-};
+  columnFilters: ColumnFilters
+  onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void
+}
 
 export function Filters({
   columnFilters,
   onColumnFilterChange,
 }: TableFiltersProps) {
   // Local states for debounced inputs
-  const [localNameId, setLocalNameId] = useState(columnFilters.nameId);
-  const [localTeam, setLocalTeam] = useState(columnFilters.team);
-  const [localBday, setLocalBday] = useState(columnFilters.bday);
+  const [localNameId, setLocalNameId] = useState(columnFilters.nameId)
+  const [localTeam, setLocalTeam] = useState(columnFilters.team)
+  const [localBday, setLocalBday] = useState(columnFilters.bday)
   const [localEmailMobile, setLocalEmailMobile] = useState(
     columnFilters.emailMobile
-  );
+  )
 
   // Debounced values
-  const [debouncedNameId] = useDebounceValue(localNameId, 300);
-  const [debouncedTeam] = useDebounceValue(localTeam, 300);
-  const [debouncedBday] = useDebounceValue(localBday, 300);
-  const [debouncedEmailMobile] = useDebounceValue(localEmailMobile, 300);
+  const [debouncedNameId] = useDebounceValue(localNameId, 300)
+  const [debouncedTeam] = useDebounceValue(localTeam, 300)
+  const [debouncedBday] = useDebounceValue(localBday, 300)
+  const [debouncedEmailMobile] = useDebounceValue(localEmailMobile, 300)
 
   // Effects to update parent's filter state after debounce
   useEffect(() => {
     if (debouncedNameId !== columnFilters.nameId) {
-      onColumnFilterChange('nameId', debouncedNameId);
+      onColumnFilterChange('nameId', debouncedNameId)
     }
-  }, [debouncedNameId, columnFilters.nameId, onColumnFilterChange]);
+  }, [debouncedNameId, columnFilters.nameId, onColumnFilterChange])
 
   useEffect(() => {
     if (debouncedTeam !== columnFilters.team) {
-      onColumnFilterChange('team', debouncedTeam);
+      onColumnFilterChange('team', debouncedTeam)
     }
-  }, [debouncedTeam, columnFilters.team, onColumnFilterChange]);
+  }, [debouncedTeam, columnFilters.team, onColumnFilterChange])
 
   useEffect(() => {
     if (debouncedBday !== columnFilters.bday) {
-      onColumnFilterChange('bday', debouncedBday);
+      onColumnFilterChange('bday', debouncedBday)
     }
-  }, [debouncedBday, columnFilters.bday, onColumnFilterChange]);
+  }, [debouncedBday, columnFilters.bday, onColumnFilterChange])
 
   useEffect(() => {
     if (debouncedEmailMobile !== columnFilters.emailMobile) {
-      onColumnFilterChange('emailMobile', debouncedEmailMobile);
+      onColumnFilterChange('emailMobile', debouncedEmailMobile)
     }
-  }, [debouncedEmailMobile, columnFilters.emailMobile, onColumnFilterChange]);
+  }, [debouncedEmailMobile, columnFilters.emailMobile, onColumnFilterChange])
 
   // Helper to parse date string for Calendar component
   const parseDateString = (dateString: string): Date | undefined => {
-    const parsed = parse(dateString, 'MMM dd, yyyy', new Date());
-    return isValid(parsed) ? parsed : undefined;
-  };
+    const parsed = parse(dateString, 'MMM dd, yyyy', new Date())
+    return isValid(parsed) ? parsed : undefined
+  }
 
   return (
     <TableRow className='bg-gray-50'>
@@ -144,16 +145,28 @@ export function Filters({
                 onChange={(e) => setLocalBday(e.target.value)}
               />
               <CalendarIcon className='absolute right-2.5 top-2.5 h-3 w-3 text-gray-500' />
+              {localBday && (
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-500 hover:bg-transparent'
+                  onClick={() => setLocalBday('')}
+                  aria-label='Clear date'
+                >
+                  <X className='h-3 w-3' />
+                </Button>
+              )}
             </div>
           </PopoverTrigger>
           <PopoverContent className='w-auto p-0' align='start'>
             <Calendar
               mode='single'
-              selected={parseDateString(localBday)} // Parse string to Date object for Calendar
+              selected={parseDateString(localBday)}
               onSelect={(date) =>
                 setLocalBday(date ? format(date, 'MMM dd, yyyy') : '')
               }
               initialFocus
+              captionLayout='dropdown'
             />
           </PopoverContent>
         </Popover>
@@ -209,5 +222,5 @@ export function Filters({
       </TableCell>
       <TableCell />
     </TableRow>
-  );
+  )
 }

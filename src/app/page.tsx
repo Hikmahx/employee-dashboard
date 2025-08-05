@@ -111,51 +111,48 @@ export default function Home() {
     direction: 'asc',
   });
 
-  // useEffect(() => {
-  //   const ws = new WebSocket('ws://localhost:8080');
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080');
 
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connected');
-  //   };
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+    };
 
-  //   ws.onmessage = (event) => {
-  //     const newEmployeeData = JSON.parse(event.data);
-  //     const parsedEmployee = EmployeeSchema.safeParse({
-  //       ...newEmployeeData,
-  //       id: `163-${employees.length + 1}`,
-  //       checked: false,
-  //       expanded: false,
-  //     });
+    ws.onmessage = (event) => {
+      const newEmployeeData = JSON.parse(event.data);
+      const parsedEmployee = EmployeeSchema.safeParse({
+        ...newEmployeeData,
+        id: `163-${employees.length + 1}`,
+        checked: false,
+        expanded: false,
+      });
 
-  //     if (parsedEmployee.success) {
-  //       setEmployees((prevEmployees) => [
-  //         ...prevEmployees,
-  //         parsedEmployee.data,
-  //       ]);
-  //       toast({
-  //         title: 'New Employee Added via WebSocket',
-  //         description: `${parsedEmployee.data.name} has joined the team.`,
-  //       });
-  //     } else {
-  //       console.error(
-  //         'Invalid employee data received from WebSocket:',
-  //         parsedEmployee.error
-  //       );
-  //     }
-  //   };
+      if (parsedEmployee.success) {
+        setEmployees((prevEmployees) => [
+          ...prevEmployees,
+          parsedEmployee.data,
+        ]);
+        toast(`${parsedEmployee.data.name} has joined the team.`);
+      } else {
+        console.error(
+          'Invalid employee data received from WebSocket:',
+          parsedEmployee.error
+        );
+      }
+    };
 
-  //   ws.onclose = () => {
-  //     console.log('WebSocket disconnected');
-  //   };
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
 
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error);
-  //   };
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
 
-  //   return () => {
-  //     ws.close();
-  //   };
-  // }, [employees.length, toast]);
+    return () => {
+      ws.close();
+    };
+  }, [employees.length]);
 
   const handleToggleExpand = (id: string) => {
     setEmployees((prevEmployees) =>
@@ -182,8 +179,8 @@ export default function Home() {
       )
     );
     toast(`${updatedEmployee.name}'s details have been successfully updated.`);
-    setIsEditEmployeeDialogOpen(false);
-    setEmployeeToEdit(null);
+    // setIsEditEmployeeDialogOpen(false);
+    // setEmployeeToEdit(null);
   };
 
   const handleAddEmployee = (

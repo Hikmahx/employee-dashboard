@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import type * as z from 'zod';
-import { format } from 'date-fns';
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import type * as z from 'zod'
+import { format } from 'date-fns'
 
 import {
   Dialog,
@@ -12,16 +12,16 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 import {
   Form,
   FormControl,
@@ -29,34 +29,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { CalendarIcon } from 'lucide-react';
+} from '@/components/ui/form'
+import { CalendarIcon } from 'lucide-react'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import type { Employee } from '@/lib/types';
-import { EmployeeSchema } from '@/lib/types';
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import type { Employee } from '@/lib/types'
+import { EmployeeSchema } from '@/lib/types'
 
 // Define a schema for the form input by omitting auto-generated fields from EmployeeSchema
 const AddEmployeeFormSchema = EmployeeSchema.omit({
   id: true,
   checked: true,
   expanded: true,
-});
+})
 
-type AddEmployeeFormValues = z.infer<typeof AddEmployeeFormSchema>;
+type AddEmployeeFormValues = z.infer<typeof AddEmployeeFormSchema>
 
 type AddEmployeeDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
   onAddEmployee: (
     employee: Omit<Employee, 'id' | 'checked' | 'expanded'>
-  ) => void;
-};
+  ) => void
+}
 
 export function AddEmployeeDialog({
   isOpen,
@@ -77,12 +77,12 @@ export function AddEmployeeDialog({
       address: '',
       status: '',
     },
-  });
+  })
 
   const onSubmit = (values: AddEmployeeFormValues) => {
-    onAddEmployee(values);
-    form.reset(); // Reset form fields after successful submission
-  };
+    onAddEmployee(values)
+    form.reset()
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -239,6 +239,7 @@ export function AddEmployeeDialog({
                           )
                         }
                         initialFocus
+                        captionLayout='dropdown'
                       />
                     </PopoverContent>
                   </Popover>
@@ -350,5 +351,5 @@ export function AddEmployeeDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
