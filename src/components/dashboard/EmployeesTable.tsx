@@ -34,6 +34,7 @@ type EmployeeTableProps = {
   onToggleExpand: (id: string) => void
   onToggleCheck: (id: string) => void
   onSaveEmployee: (employee: Employee) => void
+  onDeleteEmployee: (id: string) => void
   columnFilters: ColumnFilters
   onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void
   sortConfig: SortConfig
@@ -45,12 +46,12 @@ export function EmployeeTable({
   onToggleExpand,
   onToggleCheck,
   onSaveEmployee,
+  onDeleteEmployee,
   columnFilters,
   onColumnFilterChange,
   sortConfig,
   onSort,
-}: // Removed expandedEmployeeId and checkedEmployeeIds from destructuring
-EmployeeTableProps) {
+}: EmployeeTableProps) {
   const getSortIcon = (key: keyof Employee) => {
     if (sortConfig.key !== key) {
       return <ArrowUpDown className='h-4 w-4 text-gray-400' />
@@ -62,9 +63,9 @@ EmployeeTableProps) {
   }
 
   return (
-    <div className='rounded-lg border border-gray-50 bg-white shadow-sm max-h-[75vh] overflow-scroll'>
+    <div className='rounded-lg border border-gray-50 bg-white shadow-sm max-h-[75vh] overflow-scroll relative mb-20 md:mb-0'>
       <Table>
-        <TableHeader>
+        <TableHeader className='sticky top-0 z-10 bg-white'>
           <TableRow className='bg-gray-50'>
             <TableHead className='w-[50px]'>
               <Checkbox id='select-all' />
@@ -134,28 +135,30 @@ EmployeeTableProps) {
             </TableHead>
             <TableHead className='w-[80px]' />
           </TableRow>
-        </TableHeader>
-        <TableBody>
           <Filters
             columnFilters={columnFilters}
             onColumnFilterChange={onColumnFilterChange}
           />
-          {employees.length === 0 && (
+        </TableHeader>
+        <TableBody>
+          {employees.length === 0 ? (
             <TableRow>
               <TableCell colSpan={9} className='text-center text-gray-500 py-9'>
-                No employees found
+                No employees found.
               </TableCell>
             </TableRow>
+          ) : (
+            employees.map((employee) => (
+              <EmployeeRow
+                key={employee.id}
+                employee={employee}
+                onToggleExpand={onToggleExpand}
+                onToggleCheck={onToggleCheck}
+                onSaveEmployee={onSaveEmployee}
+                onDeleteEmployee={onDeleteEmployee}
+              />
+            ))
           )}
-          {employees.map((employee) => (
-            <EmployeeRow
-              key={employee.id}
-              employee={employee}
-              onToggleExpand={onToggleExpand}
-              onToggleCheck={onToggleCheck}
-              onSaveEmployee={onSaveEmployee}
-            />
-          ))}
         </TableBody>
       </Table>
     </div>

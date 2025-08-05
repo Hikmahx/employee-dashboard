@@ -43,70 +43,76 @@ export function Header({
   }, [debouncedLocalSearchTerm, searchTerm, setSearchTerm]);
 
   return (
-    <div className='flex items-center justify-between'>
+    <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-0 mb-5 lg:mb-0'>
       <h1 className='text-2xl font-semibold'>Employees</h1>
-      <div className='flex items-center gap-4'>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='All categories' />
-          </SelectTrigger>
-          <SelectContent className='bg-white'>
-            <SelectItem value='all'>All categories</SelectItem>
-            <SelectItem value='designer'>Designer</SelectItem>
-            <SelectItem value='product manager'>Product Manager</SelectItem>
-            <SelectItem value='engineer'>Engineer</SelectItem>
-          </SelectContent>
-        </Select>
-        <div className='relative'>
-          <Input
-            type='search'
-            placeholder='Search...'
-            className='pl-8'
-            value={localSearchTerm}
-            onChange={(e) => setLocalSearchTerm(e.target.value)}
-          />
-          <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-gray-500' />
+      <div className='flex flex-col sm:flex-row items-center justify-between lg:justify-end gap-4 w-full lg:ml-auto'>
+        <div className='flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto'>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className='w-full sm:w-[180px]'>
+              <SelectValue placeholder='All categories' />
+            </SelectTrigger>
+            <SelectContent className='bg-white'>
+              <SelectItem value='all'>All categories</SelectItem>
+              <SelectItem value='designer'>Designer</SelectItem>
+              <SelectItem value='product manager'>Product Manager</SelectItem>
+              <SelectItem value='engineer'>Engineer</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className='relative w-full md:w-auto'>
+            <Input
+              type='search'
+              placeholder='Search...'
+              className='pl-8 w-full min-w-[120px]'
+              value={localSearchTerm}
+              onChange={(e) => setLocalSearchTerm(e.target.value)}
+            />
+            <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-gray-500' />
+          </div>
         </div>
-        <Button
-          className='bg-teal-500 hover:bg-teal-600 text-white'
-          onClick={onAddEmployeeClick}
-        >
-          <Plus className='mr-2 h-4 w-4' />
-          Add employee
-        </Button>
-        <div className='flex rounded-md border'>
+        <div className='flex items-center gap-4 w-full lg:w-auto'>
           <Button
-            variant={!showSelectedOnly ? 'default' : 'ghost'}
-            size='icon'
-            className={`rounded-r-none ${
-              !showSelectedOnly
-                ? 'bg-teal-500 hover:bg-teal-600 text-white'
-                : ''
-            }`}
-            onClick={() => setShowSelectedOnly(false)}
+            className='bg-teal-500 hover:bg-teal-600 text-white flex-1 w-full md:max-w-[150px]'
+            onClick={onAddEmployeeClick}
           >
-            <AlignJustify
-              className={`h-4 w-4 ${
-                !showSelectedOnly ? 'text-white' : 'text-gray-500'
-              }`}
-            />
-            <span className='sr-only'>List view</span>
+            <Plus className='mr-2 h-4 w-4' />
+            Add <span className='hidden md:flex'>employee</span>
           </Button>
-          <Button
-            variant={showSelectedOnly ? 'default' : 'ghost'}
-            size='icon'
-            className={`rounded-l-none ${
-              showSelectedOnly ? 'bg-teal-500 hover:bg-teal-600 text-white' : ''
-            }`}
-            onClick={() => setShowSelectedOnly(true)}
-          >
-            <List
-              className={`h-4 w-4 ${
-                showSelectedOnly ? 'text-white' : 'text-gray-500'
+          <div className='flex  rounded-md border'>
+            <Button
+              variant={!showSelectedOnly ? 'default' : 'ghost'}
+              size='icon'
+              className={`rounded-r-none ${
+                !showSelectedOnly
+                  ? 'bg-teal-500 hover:bg-teal-600 text-white'
+                  : ''
               }`}
-            />
-            <span className='sr-only'>Show selected</span>
-          </Button>
+              onClick={() => setShowSelectedOnly(false)}
+            >
+              <AlignJustify
+                className={`h-4 w-4 ${
+                  !showSelectedOnly ? 'text-white' : 'text-gray-500'
+                }`}
+              />
+              <span className='sr-only'>List view</span>
+            </Button>
+            <Button
+              variant={showSelectedOnly ? 'default' : 'ghost'}
+              size='icon'
+              className={`rounded-l-none ${
+                showSelectedOnly
+                  ? 'bg-teal-500 hover:bg-teal-600 text-white'
+                  : ''
+              }`}
+              onClick={() => setShowSelectedOnly(true)}
+            >
+              <List
+                className={`h-4 w-4 ${
+                  showSelectedOnly ? 'text-white' : 'text-gray-500'
+                }`}
+              />
+              <span className='sr-only'>Show selected</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

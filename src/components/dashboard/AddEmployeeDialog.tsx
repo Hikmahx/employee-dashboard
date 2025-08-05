@@ -105,9 +105,15 @@ export function AddEmployeeDialog({
                 <FormItem>
                   <FormLabel className='text-xs text-gray-500'>Name</FormLabel>
                   <FormControl>
-                    <Input className='h-9' {...field} />
+                    <Input
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.name && 'border-red-500'
+                      )}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -120,9 +126,15 @@ export function AddEmployeeDialog({
                     Surname
                   </FormLabel>
                   <FormControl>
-                    <Input className='h-9' {...field} />
+                    <Input
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.surname && 'border-red-500'
+                      )}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -139,7 +151,12 @@ export function AddEmployeeDialog({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='h-9'>
+                      <SelectTrigger
+                        className={cn(
+                          'h-9',
+                          form.formState.errors.position && 'border-red-500'
+                        )}
+                      >
                         <SelectValue placeholder='Select position' />
                       </SelectTrigger>
                     </FormControl>
@@ -152,7 +169,7 @@ export function AddEmployeeDialog({
                       <SelectItem value='New Hire'>New Hire</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -169,7 +186,12 @@ export function AddEmployeeDialog({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='h-9'>
+                      <SelectTrigger
+                        className={cn(
+                          'h-9',
+                          form.formState.errors.experience && 'border-red-500'
+                        )}
+                      >
                         <SelectValue placeholder='Select experience' />
                       </SelectTrigger>
                     </FormControl>
@@ -180,7 +202,7 @@ export function AddEmployeeDialog({
                       <SelectItem value='5 years'>5 years</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -192,13 +214,16 @@ export function AddEmployeeDialog({
                   <FormLabel className='text-xs text-gray-500'>Team</FormLabel>
                   <FormControl>
                     <Input
-                      className='h-9'
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.team && 'border-red-500'
+                      )}
                       type='number'
                       {...field}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -215,7 +240,8 @@ export function AddEmployeeDialog({
                           variant={'outline'}
                           className={cn(
                             'h-9 pl-3 text-left font-normal',
-                            !field.value && 'text-muted-foreground'
+                            !field.value && 'text-muted-foreground',
+                            form.formState.errors.bday && 'border-red-500'
                           )}
                         >
                           {field.value ? (
@@ -243,7 +269,7 @@ export function AddEmployeeDialog({
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -256,9 +282,15 @@ export function AddEmployeeDialog({
                     E-mail
                   </FormLabel>
                   <FormControl>
-                    <Input className='h-9' {...field} />
+                    <Input
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.email && 'border-red-500'
+                      )}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -271,9 +303,15 @@ export function AddEmployeeDialog({
                     Mobile
                   </FormLabel>
                   <FormControl>
-                    <Input className='h-9' {...field} />
+                    <Input
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.mobile && 'border-red-500'
+                      )}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -290,7 +328,12 @@ export function AddEmployeeDialog({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='h-9'>
+                      <SelectTrigger
+                        className={cn(
+                          'h-9',
+                          form.formState.errors.address && 'border-red-500'
+                        )}
+                      >
                         <SelectValue placeholder='Select address' />
                       </SelectTrigger>
                     </FormControl>
@@ -306,7 +349,7 @@ export function AddEmployeeDialog({
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -323,7 +366,12 @@ export function AddEmployeeDialog({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='h-9'>
+                      <SelectTrigger
+                        className={cn(
+                          'h-9',
+                          form.formState.errors.status && 'border-red-500'
+                        )}
+                      >
                         <SelectValue placeholder='Select status' />
                       </SelectTrigger>
                     </FormControl>
@@ -332,7 +380,7 @@ export function AddEmployeeDialog({
                       <SelectItem value='Part-time'>Part-time</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />

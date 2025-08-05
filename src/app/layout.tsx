@@ -31,8 +31,8 @@ export default function RootLayout({
       >
         <main className='fixed flex h-screen overflow-hidden w-full bg-gray-100/40'>
           <Sidebar />
-          <div className='h-screen'>
-          <div className='flex flex-1 flex-col h-full overflow-scroll p-4 md:gap-8 md:p-6'>
+          <div className='h-screen w-[calc(100vw-80px)] flex flex-col'>
+          <div className='flex flex-1 flex-col h-full w-full overflow-scroll p-4 md:gap-8 md:p-6'>
             {children}
           </div>
           <Toaster />

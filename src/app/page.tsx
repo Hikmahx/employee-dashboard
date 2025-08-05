@@ -1,101 +1,39 @@
-'use client';
+'use client'
 
-import { useState, useEffect, useMemo } from 'react';
-import { Header } from '@/components/dashboard/Header';
-import { EmployeeTable } from '@/components/dashboard/EmployeesTable';
-import { Paginator } from '@/components/dashboard/Paginator';
-import { AddEmployeeDialog } from '@/components/dashboard/AddEmployeeDialog';
-import { toast } from 'sonner';
-import { type Employee, EmployeeSchema } from '@/lib/types';
+import { useState, useEffect, useMemo } from 'react'
+import { Header } from '@/components/dashboard/Header'
+import { EmployeeTable } from '@/components/dashboard/EmployeesTable'
+import { Paginator } from '@/components/dashboard/Paginator'
+import { AddEmployeeDialog } from '@/components/dashboard/AddEmployeeDialog'
+import { toast } from 'sonner'
+import { type Employee, EmployeeSchema } from '@/lib/types'
+import initialEmployees from '@/data/employees.json'
 
 type SortConfig = {
-  key: keyof Employee | null;
-  direction: 'asc' | 'desc';
-};
+  key: keyof Employee | null
+  direction: 'asc' | 'desc'
+}
 
 type ColumnFilters = {
-  nameId: string;
-  position: string;
-  team: string;
-  bday: string;
-  emailMobile: string;
-  address: string;
-  status: string;
-};
-
-const initialEmployees: Employee[] = [
-  {
-    id: '163-1',
-    name: 'Selivanova Vera',
-    surname: 'Selivanova',
-    position: 'Designer',
-    experience: '3 years',
-    team: 15,
-    bday: 'Aug 15, 1986',
-    email: 'abramov@gmail.com',
-    mobile: '+375(29)-298-44-44',
-    address: 'Minsk, Pobeditelay, 135',
-    status: 'Full-time',
-    checked: false,
-    expanded: false,
-  },
-  {
-    id: '163-2',
-    name: 'Abramov Andrey',
-    surname: 'Abramov',
-    position: 'Product manager',
-    experience: '3 years',
-    team: 10,
-    bday: 'Apr 20, 1987',
-    email: 'abramov@gmail.com',
-    mobile: '+375(29)-298-44-44',
-    address: 'Minsk, Pobeditelay, 135',
-    status: 'Full-time',
-    checked: true,
-    expanded: false,
-  },
-  {
-    id: '163-3',
-    name: 'Durov Dmitriy',
-    surname: 'Durov',
-    position: 'Designer',
-    experience: '3 years',
-    team: 35,
-    bday: 'Apr 10, 1988',
-    email: 'abramov@gmail.com',
-    mobile: '+375(29)-298-44-44',
-    address: 'Minsk, Derzinskogo, 47',
-    status: 'Full-time',
-    checked: false,
-    expanded: false,
-  },
-  {
-    id: '163-4',
-    name: 'Antonov Maksim',
-    surname: 'Antonov',
-    position: 'Product manager',
-    experience: '3 years',
-    team: 21,
-    bday: 'Dec 28, 1984',
-    email: 'abramov@gmail.com',
-    mobile: '+375(29)-298-44-44',
-    address: 'Minsk, Pobeditelay, 135',
-    status: 'Full-time',
-    checked: false,
-    expanded: false,
-  },
-];
+  nameId: string
+  position: string
+  team: string
+  bday: string
+  emailMobile: string
+  address: string
+  status: string
+}
 
 export default function Home() {
-  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
-  const [currentPage, setCurrentPage] = useState(1);
-  const employeesPerPage = 4;
+  const [employees, setEmployees] = useState<Employee[]>(initialEmployees)
+  const [currentPage, setCurrentPage] = useState(1)
+  const employeesPerPage = 10
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false)
 
-  const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
+  const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false)
 
   const [columnFilters, setColumnFilters] = useState<ColumnFilters>({
     nameId: '',
@@ -105,54 +43,51 @@ export default function Home() {
     emailMobile: '',
     address: 'All',
     status: 'All',
-  });
+  })
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: null,
     direction: 'asc',
-  });
+  })
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://localhost:8080')
 
     ws.onopen = () => {
-      console.log('WebSocket connected');
-    };
+      console.log('WebSocket connected')
+    }
 
     ws.onmessage = (event) => {
-      const newEmployeeData = JSON.parse(event.data);
+      const newEmployeeData = JSON.parse(event.data)
       const parsedEmployee = EmployeeSchema.safeParse({
         ...newEmployeeData,
         id: `163-${employees.length + 1}`,
         checked: false,
         expanded: false,
-      });
+      })
 
       if (parsedEmployee.success) {
-        setEmployees((prevEmployees) => [
-          ...prevEmployees,
-          parsedEmployee.data,
-        ]);
-        toast(`${parsedEmployee.data.name} has joined the team.`);
+        setEmployees((prevEmployees) => [...prevEmployees, parsedEmployee.data])
+        toast(`${parsedEmployee.data.name} has joined the team.`)
       } else {
         console.error(
           'Invalid employee data received from WebSocket:',
           parsedEmployee.error
-        );
+        )
       }
-    };
+    }
 
     ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
+      console.log('WebSocket disconnected')
+    }
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+      console.error('WebSocket error:', error)
+    }
 
     return () => {
-      ws.close();
-    };
-  }, [employees.length]);
+      ws.close()
+    }
+  }, [employees.length])
 
   const handleToggleExpand = (id: string) => {
     setEmployees((prevEmployees) =>
@@ -161,100 +96,107 @@ export default function Home() {
           ? { ...emp, expanded: !emp.expanded }
           : { ...emp, expanded: false }
       )
-    );
-  };
+    )
+  }
 
   const handleToggleCheck = (id: string) => {
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) =>
         emp.id === id ? { ...emp, checked: !emp.checked } : emp
       )
-    );
-  };
+    )
+  }
 
   const handleSaveEmployee = (updatedEmployee: Employee) => {
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) =>
         emp.id === updatedEmployee.id ? updatedEmployee : emp
       )
-    );
-    toast(`${updatedEmployee.name}'s details have been successfully updated.`);
+    )
+    toast(`${updatedEmployee.name}'s details have been successfully updated.`)
     // setIsEditEmployeeDialogOpen(false);
     // setEmployeeToEdit(null);
-  };
+  }
+
+  const handleDeleteEmployee = (id: string) => {
+    setEmployees((prevEmployees) =>
+      prevEmployees.filter((emp) => emp.id !== id)
+    )
+    toast(`Employee with ID ${id.split('-')[1]} has been removed.`)
+  }
 
   const handleAddEmployee = (
     newEmployeeData: Omit<Employee, 'id' | 'checked' | 'expanded'>
   ) => {
-    const newId = `163-${employees.length + 1}`;
+    const newId = `163-${employees.length + 1}`
     const newEmployee: Employee = {
       ...newEmployeeData,
       id: newId,
       checked: false,
       expanded: false,
-    };
-    setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
-    setIsAddEmployeeDialogOpen(false);
-    toast(`${newEmployee.name} has been successfully added.`);
-  };
+    }
+    setEmployees((prevEmployees) => [...prevEmployees, newEmployee])
+    setIsAddEmployeeDialogOpen(false)
+    toast(`${newEmployee.name} has been successfully added.`)
+  }
 
   const handleColumnFilterChange = (
     key: keyof ColumnFilters,
     value: string
   ) => {
-    setColumnFilters((prev) => ({ ...prev, [key]: value }));
+    setColumnFilters((prev) => ({ ...prev, [key]: value }))
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) => ({ ...emp, expanded: false }))
-    );
-    setCurrentPage(1);
-  };
+    )
+    setCurrentPage(1)
+  }
 
   const handleSetSearchTerm = (term: string) => {
-    setSearchTerm(term);
+    setSearchTerm(term)
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) => ({ ...emp, expanded: false }))
-    );
-    setCurrentPage(1);
-  };
+    )
+    setCurrentPage(1)
+  }
 
   const handleSetCategoryFilter = (category: string) => {
-    setCategoryFilter(category);
+    setCategoryFilter(category)
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) => ({ ...emp, expanded: false }))
-    );
-    setCurrentPage(1);
-  };
+    )
+    setCurrentPage(1)
+  }
 
   const handleSort = (key: keyof Employee) => {
-    let direction: 'asc' | 'desc' = 'asc';
+    let direction: 'asc' | 'desc' = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+      direction = 'desc'
     }
-    setSortConfig({ key, direction });
-  };
+    setSortConfig({ key, direction })
+  }
 
   const filteredAndSortedEmployees = useMemo(() => {
-    let filtered = employees;
+    let filtered = employees
 
     if (showSelectedOnly) {
-      filtered = filtered.filter((emp) => emp.checked);
+      filtered = filtered.filter((emp) => emp.checked)
     }
 
     if (searchTerm) {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      const lowerCaseSearchTerm = searchTerm.toLowerCase()
       filtered = filtered.filter(
         (emp) =>
           emp.name.toLowerCase().includes(lowerCaseSearchTerm) ||
           emp.position.toLowerCase().includes(lowerCaseSearchTerm) ||
           emp.email.toLowerCase().includes(lowerCaseSearchTerm) ||
           emp.address.toLowerCase().includes(lowerCaseSearchTerm)
-      );
+      )
     }
 
     if (categoryFilter !== 'all') {
       filtered = filtered.filter((emp) =>
         emp.position.toLowerCase().includes(categoryFilter.toLowerCase())
-      );
+      )
     }
 
     if (columnFilters.nameId) {
@@ -262,22 +204,22 @@ export default function Home() {
         (emp) =>
           emp.name.toLowerCase().includes(columnFilters.nameId.toLowerCase()) ||
           emp.id.toLowerCase().includes(columnFilters.nameId.toLowerCase())
-      );
+      )
     }
     if (columnFilters.position !== 'All') {
       filtered = filtered.filter(
         (emp) => emp.position === columnFilters.position
-      );
+      )
     }
     if (columnFilters.team) {
       filtered = filtered.filter((emp) =>
         String(emp.team).includes(columnFilters.team)
-      );
+      )
     }
     if (columnFilters.bday) {
       filtered = filtered.filter((emp) =>
         emp.bday.toLowerCase().includes(columnFilters.bday.toLowerCase())
-      );
+      )
     }
     if (columnFilters.emailMobile) {
       filtered = filtered.filter(
@@ -288,43 +230,41 @@ export default function Home() {
           emp.mobile
             .toLowerCase()
             .includes(columnFilters.emailMobile.toLowerCase())
-      );
+      )
     }
     if (columnFilters.address !== 'All') {
-      filtered = filtered.filter(
-        (emp) => emp.address === columnFilters.address
-      );
+      filtered = filtered.filter((emp) => emp.address === columnFilters.address)
     }
     if (columnFilters.status !== 'All') {
-      filtered = filtered.filter((emp) => emp.status === columnFilters.status);
+      filtered = filtered.filter((emp) => emp.status === columnFilters.status)
     }
 
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        const aValue = a[sortConfig.key!];
-        const bValue = b[sortConfig.key!];
+        const aValue = a[sortConfig.key!]
+        const bValue = b[sortConfig.key!]
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           if (sortConfig.key === 'bday') {
-            const dateA = new Date(aValue);
-            const dateB = new Date(bValue);
-            if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1;
-            if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
-            return 0;
+            const dateA = new Date(aValue)
+            const dateB = new Date(bValue)
+            if (dateA < dateB) return sortConfig.direction === 'asc' ? -1 : 1
+            if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1
+            return 0
           }
-          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-          return 0;
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+          return 0
         } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-          return 0;
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+          return 0
         }
-        return 0;
-      });
+        return 0
+      })
     }
 
-    return filtered;
+    return filtered
   }, [
     employees,
     showSelectedOnly,
@@ -332,15 +272,15 @@ export default function Home() {
     categoryFilter,
     columnFilters,
     sortConfig,
-  ]);
+  ])
 
   const totalPages = Math.ceil(
     filteredAndSortedEmployees.length / employeesPerPage
-  );
+  )
   const currentEmployees = filteredAndSortedEmployees.slice(
     (currentPage - 1) * employeesPerPage,
     currentPage * employeesPerPage
-  );
+  )
 
   return (
     <>
@@ -353,27 +293,34 @@ export default function Home() {
         setShowSelectedOnly={setShowSelectedOnly}
         onAddEmployeeClick={() => setIsAddEmployeeDialogOpen(true)}
       />
-      <EmployeeTable
-        employees={currentEmployees}
-        onToggleExpand={handleToggleExpand}
-        onToggleCheck={handleToggleCheck}
-        onSaveEmployee={handleSaveEmployee}
-        columnFilters={columnFilters}
-        sortConfig={sortConfig}
-        onSort={handleSort}
-        onColumnFilterChange={handleColumnFilterChange}
-      />
-      <Paginator
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalEmployees={filteredAndSortedEmployees.length}
-        onPageChange={setCurrentPage}
-      />
+      {filteredAndSortedEmployees.length === 0 ? (
+        <p className='text-center text-gray-500 py-8'>No employees found.</p>
+      ) : (
+        <>
+          <EmployeeTable
+            employees={currentEmployees}
+            onToggleExpand={handleToggleExpand}
+            onToggleCheck={handleToggleCheck}
+            onSaveEmployee={handleSaveEmployee}
+            onDeleteEmployee={handleDeleteEmployee}
+            columnFilters={columnFilters}
+            sortConfig={sortConfig}
+            onSort={handleSort}
+            onColumnFilterChange={handleColumnFilterChange}
+          />
+          <Paginator
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalEmployees={filteredAndSortedEmployees.length}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      )}
       <AddEmployeeDialog
         isOpen={isAddEmployeeDialogOpen}
         onClose={() => setIsAddEmployeeDialogOpen(false)}
         onAddEmployee={handleAddEmployee}
       />
     </>
-  );
+  )
 }

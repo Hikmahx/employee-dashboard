@@ -17,7 +17,7 @@ export function Paginator({
   onPageChange,
 }: TablePaginationProps) {
   return (
-    <div className='flex items-center justify-between px-4 py-2 text-sm mt-auto'>
+    <div className='flex flex-col md:flex-row gap-4 items-center justify-center px-4 py-2 text-sm mt-auto fixed bottom-0 right-0 w-[calc(100%-80px)] md:w-full md:relative bg-gray-50'>
       <div className='flex items-center gap-2'>
         <Button
           variant='outline'
@@ -55,7 +55,7 @@ export function Paginator({
           <span className='sr-only'>Next page</span>
         </Button>
       </div>
-      <div className='text-gray-500'>{totalEmployees} employees</div>
+      <div className='text-gray-500 md:absolute sm:right-4 md:right-6'>{totalEmployees} employees</div>
     </div>
   );
 }
