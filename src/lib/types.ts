@@ -21,9 +21,11 @@ export const EmployeeSchema = z.object({
     .regex(
       /^\+\d{1,3}$$\d{2,3}$$-\d{3}-\d{2}-\d{2}$/,
       'Invalid mobile format (e.g., +375(29)-298-44-44)'
-    ),
+    ), 
   address: z.string().min(1, 'Address is required'),
   status: z.string().min(1, 'Status is required'),
+  checked: z.boolean(),
+  expanded: z.boolean(),
 });
 
 export type Employee = z.infer<typeof EmployeeSchema>;

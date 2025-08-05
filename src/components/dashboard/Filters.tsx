@@ -1,7 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-
 import { useState, useEffect } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { TableRow, TableCell } from '@/components/ui/table';
@@ -21,7 +19,7 @@ import {
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, parse, isValid } from 'date-fns';
 
 type ColumnFilters = {
   nameId: string;
@@ -81,6 +79,12 @@ export function Filters({
     }
   }, [debouncedEmailMobile, columnFilters.emailMobile, onColumnFilterChange]);
 
+  // Helper to parse date string for Calendar component
+  const parseDateString = (dateString: string): Date | undefined => {
+    const parsed = parse(dateString, 'MMM dd, yyyy', new Date());
+    return isValid(parsed) ? parsed : undefined;
+  };
+
   return (
     <TableRow className='bg-gray-50'>
       <TableCell className='w-[50px]' />
@@ -128,28 +132,28 @@ export function Filters({
       <TableCell>
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              className={cn(
-                'h-8 w-full justify-start text-left font-normal',
-                !localBday && 'text-muted-foreground'
-              )}
-            >
-              <CalendarIcon className='mr-2 h-4 w-4' />
-              {localBday ? (
-                format(new Date(localBday), 'MMM dd, yyyy')
-              ) : (
-                <span>Pick a date</span>
-              )}
-            </Button>
+            <div className='relative'>
+              <Input
+                type='text'
+                placeholder='Pick a date'
+                className={cn(
+                  'h-8 pr-8',
+                  !localBday && 'text-muted-foreground'
+                )}
+                value={localBday}
+                onChange={(e) => setLocalBday(e.target.value)}
+              />
+              <CalendarIcon className='absolute right-2.5 top-2.5 h-3 w-3 text-gray-500' />
+            </div>
           </PopoverTrigger>
           <PopoverContent className='w-auto p-0' align='start'>
             <Calendar
               mode='single'
-              selected={localBday ? new Date(localBday) : undefined}
+              selected={parseDateString(localBday)} // Parse string to Date object for Calendar
               onSelect={(date) =>
                 setLocalBday(date ? format(date, 'MMM dd, yyyy') : '')
               }
+              initialFocus
             />
           </PopoverContent>
         </Popover>

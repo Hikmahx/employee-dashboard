@@ -5,8 +5,6 @@ import { Header } from '@/components/dashboard/Header';
 import { EmployeeTable } from '@/components/dashboard/EmployeesTable';
 import { Paginator } from '@/components/dashboard/Paginator';
 import { AddEmployeeDialog } from '@/components/dashboard/AddEmployeeDialog';
-import { EmployeeGridCard } from '@/components/dashboard/EmployeeGridCard';
-import { EditEmployeeDialog } from '@/components/dashboard/EditEmployeeDialog';
 import { toast } from 'sonner';
 import { type Employee, EmployeeSchema } from '@/lib/types';
 
@@ -38,6 +36,8 @@ const initialEmployees: Employee[] = [
     mobile: '+375(29)-298-44-44',
     address: 'Minsk, Pobeditelay, 135',
     status: 'Full-time',
+    checked: false,
+    expanded: false,
   },
   {
     id: '163-2',
@@ -51,6 +51,8 @@ const initialEmployees: Employee[] = [
     mobile: '+375(29)-298-44-44',
     address: 'Minsk, Pobeditelay, 135',
     status: 'Full-time',
+    checked: true,
+    expanded: false,
   },
   {
     id: '163-3',
@@ -64,6 +66,8 @@ const initialEmployees: Employee[] = [
     mobile: '+375(29)-298-44-44',
     address: 'Minsk, Derzinskogo, 47',
     status: 'Full-time',
+    checked: false,
+    expanded: false,
   },
   {
     id: '163-4',
@@ -77,6 +81,8 @@ const initialEmployees: Employee[] = [
     mobile: '+375(29)-298-44-44',
     address: 'Minsk, Pobeditelay, 135',
     status: 'Full-time',
+    checked: false,
+    expanded: false,
   },
 ];
 
@@ -87,7 +93,8 @@ export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [layoutView, setLayoutView] = useState<'list' | 'grid'>('list');
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFilters>({
@@ -104,17 +111,6 @@ export default function Home() {
     direction: 'asc',
   });
 
-  const [expandedEmployeeId, setExpandedEmployeeId] = useState<string | null>(
-    null
-  );
-  const [checkedEmployeeIds, setCheckedEmployeeIds] = useState<Set<string>>(
-    new Set()
-  );
-
-  const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] =
-    useState(false);
-  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
-
   // useEffect(() => {
   //   const ws = new WebSocket('ws://localhost:8080');
 
@@ -124,10 +120,11 @@ export default function Home() {
 
   //   ws.onmessage = (event) => {
   //     const newEmployeeData = JSON.parse(event.data);
-  //     // Validate incoming WebSocket data with Zod schema
   //     const parsedEmployee = EmployeeSchema.safeParse({
   //       ...newEmployeeData,
-  //       id: `163-${employees.length + 1}`, // Assign a new ID for consistency
+  //       id: `163-${employees.length + 1}`,
+  //       checked: false,
+  //       expanded: false,
   //     });
 
   //     if (parsedEmployee.success) {
@@ -161,19 +158,21 @@ export default function Home() {
   // }, [employees.length, toast]);
 
   const handleToggleExpand = (id: string) => {
-    setExpandedEmployeeId((prevId) => (prevId === id ? null : id));
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) =>
+        emp.id === id
+          ? { ...emp, expanded: !emp.expanded }
+          : { ...emp, expanded: false }
+      )
+    );
   };
 
   const handleToggleCheck = (id: string) => {
-    setCheckedEmployeeIds((prevIds) => {
-      const newIds = new Set(prevIds);
-      if (newIds.has(id)) {
-        newIds.delete(id);
-      } else {
-        newIds.add(id);
-      }
-      return newIds;
-    });
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) =>
+        emp.id === id ? { ...emp, checked: !emp.checked } : emp
+      )
+    );
   };
 
   const handleSaveEmployee = (updatedEmployee: Employee) => {
@@ -187,9 +186,16 @@ export default function Home() {
     setEmployeeToEdit(null);
   };
 
-  const handleAddEmployee = (newEmployeeData: Omit<Employee, 'id'>) => {
-    const newId = `163-${employees.length + 1}`; // Simple ID generation
-    const newEmployee: Employee = { ...newEmployeeData, id: newId };
+  const handleAddEmployee = (
+    newEmployeeData: Omit<Employee, 'id' | 'checked' | 'expanded'>
+  ) => {
+    const newId = `163-${employees.length + 1}`;
+    const newEmployee: Employee = {
+      ...newEmployeeData,
+      id: newId,
+      checked: false,
+      expanded: false,
+    };
     setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
     setIsAddEmployeeDialogOpen(false);
     toast(`${newEmployee.name} has been successfully added.`);
@@ -200,19 +206,25 @@ export default function Home() {
     value: string
   ) => {
     setColumnFilters((prev) => ({ ...prev, [key]: value }));
-    setExpandedEmployeeId(null);
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) => ({ ...emp, expanded: false }))
+    );
     setCurrentPage(1);
   };
 
   const handleSetSearchTerm = (term: string) => {
     setSearchTerm(term);
-    setExpandedEmployeeId(null);
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) => ({ ...emp, expanded: false }))
+    );
     setCurrentPage(1);
   };
 
   const handleSetCategoryFilter = (category: string) => {
     setCategoryFilter(category);
-    setExpandedEmployeeId(null);
+    setEmployees((prevEmployees) =>
+      prevEmployees.map((emp) => ({ ...emp, expanded: false }))
+    );
     setCurrentPage(1);
   };
 
@@ -224,15 +236,13 @@ export default function Home() {
     setSortConfig({ key, direction });
   };
 
-  const handleEditEmployeeClick = (employee: Employee) => {
-    setEmployeeToEdit(employee);
-    setIsEditEmployeeDialogOpen(true);
-  };
-
   const filteredAndSortedEmployees = useMemo(() => {
     let filtered = employees;
 
-    // Global search filter
+    if (showSelectedOnly) {
+      filtered = filtered.filter((emp) => emp.checked);
+    }
+
     if (searchTerm) {
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -244,14 +254,12 @@ export default function Home() {
       );
     }
 
-    // Category filter (example, assuming 'position' maps to categories)
     if (categoryFilter !== 'all') {
       filtered = filtered.filter((emp) =>
         emp.position.toLowerCase().includes(categoryFilter.toLowerCase())
       );
     }
 
-    // Column filters
     if (columnFilters.nameId) {
       filtered = filtered.filter(
         (emp) =>
@@ -294,14 +302,12 @@ export default function Home() {
       filtered = filtered.filter((emp) => emp.status === columnFilters.status);
     }
 
-    // Sorting
     if (sortConfig.key) {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key!];
         const bValue = b[sortConfig.key!];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
-          // Handle date sorting
           if (sortConfig.key === 'bday') {
             const dateA = new Date(aValue);
             const dateB = new Date(bValue);
@@ -309,12 +315,10 @@ export default function Home() {
             if (dateA > dateB) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
           }
-          // Default string sorting
           if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
           if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
         } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-          // Number sorting
           if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
           if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
           return 0;
@@ -324,7 +328,14 @@ export default function Home() {
     }
 
     return filtered;
-  }, [employees, searchTerm, categoryFilter, columnFilters, sortConfig]);
+  }, [
+    employees,
+    showSelectedOnly,
+    searchTerm,
+    categoryFilter,
+    columnFilters,
+    sortConfig,
+  ]);
 
   const totalPages = Math.ceil(
     filteredAndSortedEmployees.length / employeesPerPage
@@ -341,39 +352,20 @@ export default function Home() {
         setSearchTerm={handleSetSearchTerm}
         categoryFilter={categoryFilter}
         setCategoryFilter={handleSetCategoryFilter}
-        layoutView={layoutView}
-        setLayoutView={setLayoutView}
+        showSelectedOnly={showSelectedOnly}
+        setShowSelectedOnly={setShowSelectedOnly}
         onAddEmployeeClick={() => setIsAddEmployeeDialogOpen(true)}
       />
-      {layoutView === 'list' ? (
-        <EmployeeTable
-          employees={currentEmployees}
-          onToggleExpand={handleToggleExpand}
-          onToggleCheck={handleToggleCheck}
-          onSaveEmployee={handleSaveEmployee}
-          columnFilters={columnFilters}
-          sortConfig={sortConfig}
-          onSort={handleSort}
-          expandedEmployeeId={expandedEmployeeId}
-          checkedEmployeeIds={checkedEmployeeIds}
-          onColumnFilterChange={handleColumnFilterChange}
-        />
-      ) : (
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-          {currentEmployees.map((employee) => (
-            <EmployeeGridCard
-              key={employee.id}
-              employee={employee}
-              onToggleExpand={handleToggleExpand}
-              onToggleCheck={handleToggleCheck}
-              onSaveEmployee={handleSaveEmployee}
-              isExpanded={employee.id === expandedEmployeeId}
-              isChecked={checkedEmployeeIds.has(employee.id)}
-              onEditClick={handleEditEmployeeClick}
-            />
-          ))}
-        </div>
-      )}
+      <EmployeeTable
+        employees={currentEmployees}
+        onToggleExpand={handleToggleExpand}
+        onToggleCheck={handleToggleCheck}
+        onSaveEmployee={handleSaveEmployee}
+        columnFilters={columnFilters}
+        sortConfig={sortConfig}
+        onSort={handleSort}
+        onColumnFilterChange={handleColumnFilterChange}
+      />
       <Paginator
         currentPage={currentPage}
         totalPages={totalPages}
@@ -384,12 +376,6 @@ export default function Home() {
         isOpen={isAddEmployeeDialogOpen}
         onClose={() => setIsAddEmployeeDialogOpen(false)}
         onAddEmployee={handleAddEmployee}
-      />
-      <EditEmployeeDialog
-        isOpen={isEditEmployeeDialogOpen}
-        onClose={() => setIsEditEmployeeDialogOpen(false)}
-        employee={employeeToEdit}
-        onSaveEmployee={handleSaveEmployee}
       />
     </>
   );

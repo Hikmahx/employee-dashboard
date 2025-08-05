@@ -11,36 +11,31 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Plus, List, Grid3X3, Search } from 'lucide-react';
+import { Plus, List, AlignJustify, Search } from 'lucide-react';
 
 interface HeaderProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   categoryFilter: string;
   setCategoryFilter: (category: string) => void;
-  layoutView: 'list' | 'grid';
-  setLayoutView: (view: 'list' | 'grid') => void;
+  showSelectedOnly: boolean;
+  setShowSelectedOnly: (show: boolean) => void;
   onAddEmployeeClick: () => void;
-};
+}
 
 export function Header({
   searchTerm,
   setSearchTerm,
   categoryFilter,
   setCategoryFilter,
-  layoutView,
-  setLayoutView,
+  showSelectedOnly,
+  setShowSelectedOnly,
   onAddEmployeeClick,
 }: HeaderProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
-  // Debounce the local search term before passing it up
   const [debouncedLocalSearchTerm] = useDebounceValue(localSearchTerm, 300);
 
-  // Update the parent's search term only when the debounced value changes
-  // This effect ensures the parent's state is updated after debounce
-  // and prevents immediate re-renders on every keystroke.
-  // It also handles initial sync if searchTerm is not empty.
   useEffect(() => {
     if (debouncedLocalSearchTerm !== searchTerm) {
       setSearchTerm(debouncedLocalSearchTerm);
@@ -55,7 +50,7 @@ export function Header({
           <SelectTrigger className='w-[180px]'>
             <SelectValue placeholder='All categories' />
           </SelectTrigger>
-          <SelectContent className='bg-white'>
+          <SelectContent>
             <SelectItem value='all'>All categories</SelectItem>
             <SelectItem value='designer'>Designer</SelectItem>
             <SelectItem value='product manager'>Product Manager</SelectItem>
@@ -81,38 +76,36 @@ export function Header({
         </Button>
         <div className='flex rounded-md border'>
           <Button
-            variant={layoutView === 'list' ? 'default' : 'ghost'}
+            variant={!showSelectedOnly ? 'default' : 'ghost'}
             size='icon'
             className={`rounded-r-none ${
-              layoutView === 'list'
+              !showSelectedOnly
                 ? 'bg-teal-500 hover:bg-teal-600 text-white'
                 : ''
             }`}
-            onClick={() => setLayoutView('list')}
+            onClick={() => setShowSelectedOnly(false)}
           >
-            <List
+            <AlignJustify
               className={`h-4 w-4 ${
-                layoutView === 'grid' ? 'text-gray-500' : 'text-white'
+                !showSelectedOnly ? 'text-white' : 'text-gray-500'
               }`}
             />
             <span className='sr-only'>List view</span>
           </Button>
           <Button
-            variant={layoutView === 'grid' ? 'default' : 'ghost'}
+            variant={showSelectedOnly ? 'default' : 'ghost'}
             size='icon'
             className={`rounded-l-none ${
-              layoutView === 'grid'
-                ? 'bg-teal-500 hover:bg-teal-600 text-white'
-                : ''
+              showSelectedOnly ? 'bg-teal-500 hover:bg-teal-600 text-white' : ''
             }`}
-            onClick={() => setLayoutView('grid')}
+            onClick={() => setShowSelectedOnly(true)}
           >
-            <Grid3X3
+            <List
               className={`h-4 w-4 ${
-                layoutView === 'list' ? 'text-gray-500' : 'text-white'
+                showSelectedOnly ? 'text-white' : 'text-gray-500'
               }`}
             />
-            <span className='sr-only'>Grid view</span>
+            <span className='sr-only'>Show selected</span>
           </Button>
         </div>
       </div>

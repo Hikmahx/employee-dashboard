@@ -18,8 +18,7 @@ type EmployeeRowProps = {
   onToggleExpand: (id: string) => void;
   onToggleCheck: (id: string) => void;
   onSaveEmployee: (employee: Employee) => void;
-  isExpanded: boolean;
-  isChecked: boolean;
+  // Removed isExpanded and isChecked props
 };
 
 export function EmployeeRow({
@@ -27,16 +26,15 @@ export function EmployeeRow({
   onToggleExpand,
   onToggleCheck,
   onSaveEmployee,
-  isExpanded,
-  isChecked,
-}: EmployeeRowProps) {
+}: // Removed isExpanded and isChecked from destructuring
+EmployeeRowProps) {
   return (
     <>
-      <TableRow className={isExpanded ? 'bg-teal-50/50' : ''}>
+      <TableRow className={employee.expanded ? 'bg-teal-50/50' : ''}>
         <TableCell className='w-[50px]'>
           <Checkbox
             id={`employee-${employee.id}`}
-            checked={isChecked}
+            checked={employee.checked} // Use employee.checked directly
             onCheckedChange={() => onToggleCheck(employee.id)}
           />
         </TableCell>
@@ -67,7 +65,7 @@ export function EmployeeRow({
                   <span className='sr-only'>Actions</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='bg-white'>
+              <DropdownMenuContent align='end'>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
                 <DropdownMenuItem>Delete</DropdownMenuItem>
               </DropdownMenuContent>
@@ -77,7 +75,7 @@ export function EmployeeRow({
               size='icon'
               onClick={() => onToggleExpand(employee.id)}
             >
-              {isExpanded ? (
+              {employee.expanded ? (
                 <ChevronUp className='h-4 w-4' />
               ) : (
                 <ChevronDown className='h-4 w-4' />
@@ -87,7 +85,7 @@ export function EmployeeRow({
           </div>
         </TableCell>
       </TableRow>
-      {isExpanded && (
+      {employee.expanded && (
         <TableRow className='bg-teal-50/50'>
           <TableCell colSpan={9} className='py-0 pl-12 pr-4'>
             <EmployeeForm employee={employee} onSave={onSaveEmployee} />
