@@ -24,7 +24,10 @@ export function EmployeeForm({
   })
 
   const onSubmit = (values: Employee) => {
-    onSave(values)
+    onSave({
+      ...values,
+      expanded: false, 
+    })
   }
 
   return (
