@@ -56,23 +56,29 @@ export function EmployeeRow({
           />
         </TableCell>
         <TableCell className='font-medium'>
-          <div className='text-teal-600'>{employee.name}</div>
-          <div className='text-sm text-gray-500'>
-            {employee.id.split('-')[1]}
-          </div>
+          <div className='text-black font-medium'>{employee.name}</div>
+          <div className='text-sm text-gray-500'>{employee.id}</div>
         </TableCell>
-        <TableCell>
+        <TableCell className=''>
           <div>{employee.position}</div>
           <div className='text-sm text-gray-500'>{employee.experience}</div>
         </TableCell>
-        <TableCell>{employee.team}</TableCell>
-        <TableCell>{employee.bday}</TableCell>
         <TableCell>
-          <div className='text-teal-600'>{employee.email}</div>
+          <div className='mb-4'>{employee.team}</div>
+        </TableCell>
+        <TableCell>
+          <div className='mb-4'>{employee.bday}</div>
+        </TableCell>
+        <TableCell className=''>
+          <div className='text-gray-700 font-medium'>{employee.email}</div>
           <div className='text-sm text-gray-500'>{employee.mobile}</div>
         </TableCell>
-        <TableCell>{employee.address}</TableCell>
-        <TableCell>{employee.status}</TableCell>
+        <TableCell>
+          <div className='mb-4'>{employee.address}</div>
+        </TableCell>
+        <TableCell>
+          <div className='mb-4'>{employee.status}</div>
+        </TableCell>
         <TableCell className='text-right'>
           <div className='flex items-center justify-end gap-2'>
             <DropdownMenu>
@@ -82,7 +88,10 @@ export function EmployeeRow({
                   <span className='sr-only'>Actions</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='bg-white cursor-pointer'>
+              <DropdownMenuContent
+                align='end'
+                className='bg-white cursor-pointer'
+              >
                 <DropdownMenuItem onClick={() => onEditEmployee(employee)}>
                   Edit
                 </DropdownMenuItem>
@@ -131,7 +140,10 @@ export function EmployeeRow({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onDeleteEmployee(employee.id)} className='bg-red-500 text-white hover:bg-red-800'>
+            <AlertDialogAction
+              onClick={() => onDeleteEmployee(employee.id)}
+              className='bg-red-500 text-white hover:bg-red-800'
+            >
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>

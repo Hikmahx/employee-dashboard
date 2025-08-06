@@ -67,7 +67,7 @@ export function EmployeeTable({
   }
 
   return (
-    <div className='rounded-lg border border-gray-50 bg-white shadow-sm max-h-[75vh] overflow-scroll relative mb-20 md:mb-0'>
+    <div className='rounded-lg border bg-white shadow-sm max-h-[75vh] overflow-scroll relative mb-20 md:mb-0'>
       <Table>
         <TableHeader className='sticky top-0 z-10 bg-white'>
           <TableRow className='bg-gray-50'>
