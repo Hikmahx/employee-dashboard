@@ -41,7 +41,7 @@ export default function Home() {
     team: '',
     bday: '',
     emailMobile: '',
-    address: '', 
+    address: '',
     status: 'All',
   })
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -49,13 +49,11 @@ export default function Home() {
     direction: 'asc',
   })
 
-
   const availablePositions = useMemo(() => {
     const positions = new Set<string>()
     employees.forEach((emp) => positions.add(emp.position))
     return Array.from(positions).sort()
   }, [employees])
-
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080')
@@ -302,30 +300,24 @@ export default function Home() {
         onAddEmployeeClick={() => setIsAddEmployeeDialogOpen(true)}
         availablePositions={availablePositions}
       />
-      {filteredAndSortedEmployees.length === 0 ? (
-        <p className='text-center text-gray-500 py-8'>No employees found.</p>
-      ) : (
-        <>
-          <EmployeeTable
-            employees={currentEmployees}
-            onToggleExpand={handleToggleExpand}
-            onToggleCheck={handleToggleCheck}
-            onSaveEmployee={handleSaveEmployee}
-            onDeleteEmployee={handleDeleteEmployee}
-            columnFilters={columnFilters}
-            sortConfig={sortConfig}
-            onSort={handleSort}
-            onColumnFilterChange={handleColumnFilterChange}
-            availablePositions={availablePositions}
-          />
-          <Paginator
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalEmployees={filteredAndSortedEmployees.length}
-            onPageChange={setCurrentPage}
-          />
-        </>
-      )}
+      <EmployeeTable
+        employees={currentEmployees}
+        onToggleExpand={handleToggleExpand}
+        onToggleCheck={handleToggleCheck}
+        onSaveEmployee={handleSaveEmployee}
+        onDeleteEmployee={handleDeleteEmployee}
+        columnFilters={columnFilters}
+        sortConfig={sortConfig}
+        onSort={handleSort}
+        onColumnFilterChange={handleColumnFilterChange}
+        availablePositions={availablePositions}
+      />
+      <Paginator
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalEmployees={filteredAndSortedEmployees.length}
+        onPageChange={setCurrentPage}
+      />
       <AddEmployeeDialog
         isOpen={isAddEmployeeDialogOpen}
         onClose={() => setIsAddEmployeeDialogOpen(false)}
