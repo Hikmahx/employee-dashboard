@@ -93,7 +93,7 @@ export function Filters({
   }
 
   return (
-    <TableRow className='bg-gray-50'>
+    <TableRow className='bg-gray-50/50'>
       <TableCell className='w-[50px]' />
       <TableCell>
         <div className='relative'>

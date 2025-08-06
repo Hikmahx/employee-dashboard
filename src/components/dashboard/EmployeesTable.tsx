@@ -68,8 +68,8 @@ export function EmployeeTable({
     <div className='rounded-lg border bg-white shadow-sm max-h-[75vh] overflow-scroll relative mb-20 md:mb-0'>
       <Table>
         <TableHeader className='sticky top-0 z-10 bg-white'>
-          <TableRow className='bg-gray-50'>
-            <TableHead className='w-[50px]'>
+          <TableRow className='bg-gray-100'>
+            <TableHead className='w-[50px] opacity-0'>
               <Checkbox id='select-all' />
             </TableHead>
             <TableHead

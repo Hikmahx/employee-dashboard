@@ -49,19 +49,6 @@ export function Header({
       <h1 className='text-2xl font-semibold'>Employees</h1>
       <div className='flex flex-col sm:flex-row items-center justify-between lg:justify-end gap-4 w-full lg:ml-auto'>
         <div className='flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto'>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className='w-full sm:w-[180px]'>
-              <SelectValue placeholder='All categories' />
-            </SelectTrigger>
-            <SelectContent className='bg-white'>
-              <SelectItem value='all'>All categories</SelectItem>
-              {availablePositions.map((position) => (
-                <SelectItem key={position} value={position.toLowerCase()}>
-                  {position}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <div className='relative w-full md:w-auto'>
             <Input
               type='search'
@@ -73,6 +60,19 @@ export function Header({
             <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-gray-500' />
           </div>
         </div>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className='w-full sm:w-[180px]'>
+            <SelectValue placeholder='All categories' />
+          </SelectTrigger>
+          <SelectContent className='bg-white'>
+            <SelectItem value='all'>All categories</SelectItem>
+            {availablePositions.map((position) => (
+              <SelectItem key={position} value={position.toLowerCase()}>
+                {position}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className='flex items-center gap-4 w-full lg:w-auto'>
           <Button
             className='bg-teal-500 hover:bg-teal-600 text-white flex-1 w-full md:max-w-[150px]'
