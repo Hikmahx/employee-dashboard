@@ -41,7 +41,6 @@ import { cn } from '@/lib/utils'
 import type { Employee } from '@/lib/types'
 import { EmployeeSchema } from '@/lib/types'
 
-// Define a schema for the form input by omitting auto-generated fields from EmployeeSchema
 const AddEmployeeFormSchema = EmployeeSchema.omit({
   id: true,
   checked: true,

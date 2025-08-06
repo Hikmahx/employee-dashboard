@@ -34,10 +34,6 @@ export default function Home() {
   const [showSelectedOnly, setShowSelectedOnly] = useState(false)
 
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false)
-  const [isEditEmployeeDialogOpen, setIsEditEmployeeDialogOpen] =
-    useState(false)
-  const [selectedEmployeeForEdit, setSelectedEmployeeForEdit] =
-    useState<Employee | null>(null)
 
   const [columnFilters, setColumnFilters] = useState<ColumnFilters>({
     nameId: '',
@@ -54,7 +50,6 @@ export default function Home() {
   })
 
 
-  // Derive unique positions and addresses from the current employees data
   const availablePositions = useMemo(() => {
     const positions = new Set<string>()
     employees.forEach((emp) => positions.add(emp.position))
@@ -120,11 +115,6 @@ export default function Home() {
     )
   }
 
-  const handleEditEmployee = (employee: Employee) => {
-    setSelectedEmployeeForEdit(employee)
-    setIsEditEmployeeDialogOpen(true)
-  }
-
   const handleSaveEmployee = (updatedEmployee: Employee) => {
     setEmployees((prevEmployees) =>
       prevEmployees.map((emp) =>
@@ -132,8 +122,6 @@ export default function Home() {
       )
     )
     toast(`${updatedEmployee.name}'s details have been successfully updated.`)
-    // setIsEditEmployeeDialogOpen(false);
-    // setEmployeeToEdit(null);
   }
 
   const handleDeleteEmployee = (id: string) => {
@@ -324,7 +312,6 @@ export default function Home() {
             onToggleCheck={handleToggleCheck}
             onSaveEmployee={handleSaveEmployee}
             onDeleteEmployee={handleDeleteEmployee}
-            onEditEmployee={handleEditEmployee}
             columnFilters={columnFilters}
             sortConfig={sortConfig}
             onSort={handleSort}

@@ -43,7 +43,6 @@ export function Filters({
   onColumnFilterChange,
   availablePositions,
 }: TableFiltersProps) {
-  // Local states for debounced inputs
   const [localNameId, setLocalNameId] = useState(columnFilters.nameId)
   const [localTeam, setLocalTeam] = useState(columnFilters.team)
   const [localBday, setLocalBday] = useState(columnFilters.bday)
@@ -52,14 +51,12 @@ export function Filters({
   )
   const [localAddress, setLocalAddress] = useState(columnFilters.address)
 
-  // Debounced values
   const [debouncedNameId] = useDebounceValue(localNameId, 300)
   const [debouncedTeam] = useDebounceValue(localTeam, 300)
   const [debouncedBday] = useDebounceValue(localBday, 300)
   const [debouncedEmailMobile] = useDebounceValue(localEmailMobile, 300)
   const [debouncedAddress] = useDebounceValue(localAddress, 300)
 
-  // Effects to update parent's filter state after debounce
   useEffect(() => {
     if (debouncedNameId !== columnFilters.nameId) {
       onColumnFilterChange('nameId', debouncedNameId)
@@ -90,7 +87,6 @@ export function Filters({
     }
   }, [debouncedAddress, columnFilters.address, onColumnFilterChange])
 
-  // Helper to parse date string for Calendar component
   const parseDateString = (dateString: string): Date | undefined => {
     const parsed = parse(dateString, 'MMM dd, yyyy', new Date())
     return isValid(parsed) ? parsed : undefined

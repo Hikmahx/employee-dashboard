@@ -35,7 +35,6 @@ type EmployeeTableProps = {
   onToggleCheck: (id: string) => void
   onSaveEmployee: (employee: Employee) => void
   onDeleteEmployee: (id: string) => void
-  onEditEmployee: (employee: Employee) => void
   columnFilters: ColumnFilters
   onColumnFilterChange: (key: keyof ColumnFilters, value: string) => void
   sortConfig: SortConfig
@@ -49,7 +48,6 @@ export function EmployeeTable({
   onToggleCheck,
   onSaveEmployee,
   onDeleteEmployee,
-  onEditEmployee,
   columnFilters,
   onColumnFilterChange,
   sortConfig,
@@ -161,7 +159,6 @@ export function EmployeeTable({
                 onToggleCheck={onToggleCheck}
                 onSaveEmployee={onSaveEmployee}
                 onDeleteEmployee={onDeleteEmployee}
-                onEditEmployee={onEditEmployee}
                 availablePositions={availablePositions}
               />
             ))

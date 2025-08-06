@@ -30,7 +30,6 @@ type EmployeeRowProps = {
   onToggleCheck: (id: string) => void
   onSaveEmployee: (employee: Employee) => void
   onDeleteEmployee: (id: string) => void
-  onEditEmployee: (employee: Employee) => void
   availablePositions: string[]
 }
 
@@ -40,7 +39,6 @@ export function EmployeeRow({
   onToggleCheck,
   onSaveEmployee,
   onDeleteEmployee,
-  onEditEmployee,
   availablePositions,
 }: EmployeeRowProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -90,12 +88,9 @@ export function EmployeeRow({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align='end'
-                className='bg-white cursor-pointer'
+                className='bg-white'
               >
-                <DropdownMenuItem onClick={() => onEditEmployee(employee)}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
+                <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)} className='cursor-pointer hover:outline-none'>
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
