@@ -36,7 +36,7 @@ export function EmployeeForm({
       {/* Wrap with FormProvider */}
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='grid grid-cols-1 gap-4 py-4 md:grid-cols-2 lg:grid-cols-3'
+        className='grid gap-4 py-4'
       >
         <EmployeeFields availablePositions={availablePositions} />
         <div className='col-span-full flex justify-end'>

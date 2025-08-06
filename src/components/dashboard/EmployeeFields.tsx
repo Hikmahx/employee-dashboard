@@ -37,236 +37,257 @@ export function EmployeeFields({ availablePositions }: EmployeeFieldsProps) {
 
   return (
     <>
-      <FormField
-        control={form.control}
-        name='name'
-        render={({ field, formState }) => (
-          <FormItem>
-            <FormLabel>Full Name</FormLabel>
-            <FormControl>
-              <Input
-                placeholder='Jane Doe'
-                {...field}
-                onChange={(e) => {
-                  const fullName = e.target.value
-                  field.onChange(fullName)
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <FormField
+          control={form.control}
+          name='name'
+          render={({ field, formState }) => (
+            <FormItem className='relative'>
+              <FormLabel className='text-xs text-gray-500'>Full Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='Jane Doe'
+                  {...field}
+                  onChange={(e) => {
+                    const fullName = e.target.value
+                    field.onChange(fullName)
 
-                  const parts = fullName.trim().split(/\s+/)
-                  const surname =
-                    parts.length > 1 ? parts.slice(1).join(' ') : ''
-                  form.setValue('surname', surname, { shouldValidate: false })
-                }}
-              />
-            </FormControl>
-            {formState.submitCount > 0 && (
-              <FormMessage className='text-red-500 capitalize' />
-            )}
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='position'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Position</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger
-                  className={cn(
-                    'h-9',
-                    form.formState.errors.position && 'border-red-500'
-                  )}
-                >
-                  <SelectValue placeholder='Select position' />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className='bg-white'>
-                {availablePositions.map((position) => (
-                  <SelectItem key={position} value={position}>
-                    {position}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='experience'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Experience</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger
-                  className={cn(
-                    'h-9',
-                    form.formState.errors.experience && 'border-red-500'
-                  )}
-                >
-                  <SelectValue placeholder='Select experience' />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className='bg-white'>
-                <SelectItem value='0 years'>0 years</SelectItem>
-                <SelectItem value='1 year'>1 year</SelectItem>
-                <SelectItem value='3 years'>3 years</SelectItem>
-                <SelectItem value='5 years'>5 years</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='team'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Team</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  'h-9',
-                  form.formState.errors.team && 'border-red-500'
-                )}
-                type='number'
-                {...field}
-                onChange={(e) => field.onChange(e.target.valueAsNumber)}
-              />
-            </FormControl>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='bday'
-        render={({ field }) => (
-          <FormItem className='flex flex-col'>
-            <FormLabel className='text-xs text-gray-500'>Bday</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant={'outline'}
-                    className={cn(
-                      'h-9 pl-3 text-left font-normal',
-                      !field.value && 'text-muted-foreground',
-                      form.formState.errors.bday && 'border-red-500'
-                    )}
-                  >
-                    {field.value ? (
-                      format(new Date(field.value), 'MMM dd, yyyy')
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                    <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className='w-auto p-0' align='start'>
-                <Calendar
-                  mode='single'
-                  selected={field.value ? new Date(field.value) : undefined}
-                  onSelect={(date) =>
-                    field.onChange(date ? format(date, 'MMM dd, yyyy') : '')
-                  }
-                  initialFocus
-                  captionLayout='dropdown'
+                    const parts = fullName.trim().split(/\s+/)
+                    const surname =
+                      parts.length > 1 ? parts.slice(1).join(' ') : ''
+                    form.setValue('surname', surname, { shouldValidate: false })
+                  }}
                 />
-              </PopoverContent>
-            </Popover>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='email'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>E-mail</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  'h-9',
-                  form.formState.errors.email && 'border-red-500'
-                )}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='mobile'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Mobile</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  'h-9',
-                  form.formState.errors.mobile && 'border-red-500'
-                )}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='address'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Address</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  'h-9',
-                  form.formState.errors.address && 'border-red-500'
-                )}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='status'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='text-xs text-gray-500'>Status</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              </FormControl>
+              {formState.submitCount > 0 && (
+                <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px] capitalize' />
+              )}
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem className='relative'>
+              <FormLabel className='text-xs text-gray-500'>E-mail</FormLabel>
               <FormControl>
-                <SelectTrigger
+                <Input
                   className={cn(
                     'h-9',
-                    form.formState.errors.status && 'border-red-500'
+                    form.formState.errors.email && 'border-red-500'
                   )}
-                >
-                  <SelectValue placeholder='Select status' />
-                </SelectTrigger>
+                  {...field}
+                />
               </FormControl>
-              <SelectContent className='bg-white'>
-                <SelectItem value='Full-time'>Full-time</SelectItem>
-                <SelectItem value='Part-time'>Part-time</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage className='text-red-500' />
-          </FormItem>
-        )}
-      />
+              <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <FormField
+          control={form.control}
+          name='mobile'
+          render={({ field }) => (
+            <FormItem className='relative'>
+              <FormLabel className='text-xs text-gray-500'>Mobile</FormLabel>
+              <FormControl>
+                <Input
+                  className={cn(
+                    'h-9',
+                    form.formState.errors.mobile && 'border-red-500'
+                  )}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='address'
+          render={({ field }) => (
+            <FormItem className='relative'>
+              <FormLabel className='text-xs text-gray-500'>Address</FormLabel>
+              <FormControl>
+                <Input
+                  className={cn(
+                    'h-9',
+                    form.formState.errors.address && 'border-red-500'
+                  )}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <FormField
+          control={form.control}
+          name='team'
+          render={({ field }) => (
+            <FormItem className='relative'>
+              <FormLabel className='text-xs text-gray-500'>Team</FormLabel>
+              <FormControl>
+                <Input
+                  className={cn(
+                    'h-9',
+                    form.formState.errors.team && 'border-red-500'
+                  )}
+                  type='number'
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='bday'
+          render={({ field }) => (
+            <FormItem className='relative flex flex-col'>
+              <FormLabel className='text-xs text-gray-500'>Bday</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'h-9 pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                        form.formState.errors.bday && 'border-red-500'
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value), 'MMM dd, yyyy')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0' align='start'>
+                  <Calendar
+                    mode='single'
+                    selected={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) =>
+                      field.onChange(date ? format(date, 'MMM dd, yyyy') : '')
+                    }
+                    initialFocus
+                    captionLayout='dropdown'
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+            </FormItem>
+          )}
+        />
+        <div className='flex flex-wrap lg:flex-nowrap gap-4'>
+          <FormField
+            control={form.control}
+            name='position'
+            render={({ field }) => (
+              <FormItem className='relative'>
+                <FormLabel className='text-xs text-gray-500'>
+                  Position
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.position && 'border-red-500'
+                      )}
+                    >
+                      <SelectValue placeholder='Select position' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className='bg-white'>
+                    {availablePositions.map((position) => (
+                      <SelectItem key={position} value={position}>
+                        {position}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='experience'
+            render={({ field }) => (
+              <FormItem className='relative'>
+                <FormLabel className='text-xs text-gray-500'>
+                  Experience
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.experience && 'border-red-500'
+                      )}
+                    >
+                      <SelectValue placeholder='Select experience' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className='bg-white'>
+                    <SelectItem value='0 years'>0 years</SelectItem>
+                    <SelectItem value='1 year'>1 year</SelectItem>
+                    <SelectItem value='3 years'>3 years</SelectItem>
+                    <SelectItem value='5 years'>5 years</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='status'
+            render={({ field }) => (
+              <FormItem className='relative'>
+                <FormLabel className='text-xs text-gray-500'>Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={cn(
+                        'h-9',
+                        form.formState.errors.status && 'border-red-500'
+                      )}
+                    >
+                      <SelectValue placeholder='Select status' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className='bg-white'>
+                    <SelectItem value='Full-time'>Full-time</SelectItem>
+                    <SelectItem value='Part-time'>Part-time</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-500 absolute -bottom-3.5 italic text-[10px]' />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
     </>
   )
 }

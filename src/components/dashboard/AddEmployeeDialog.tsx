@@ -80,7 +80,7 @@ export function AddEmployeeDialog({
         <FormProvider {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className='grid grid-cols-1 gap-4 py-4 md:grid-cols-2'
+            className='grid gap-4 py-4'
           >
             <EmployeeFields availablePositions={availablePositions} />
             <DialogFooter className='col-span-full'>
